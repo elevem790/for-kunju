@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Our Memories 💞</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:radial-gradient(circle at top,#ffe6ef,#ffb6cf 45%,#ff8fb6);
+  font-family:system-ui;
+  overflow:hidden;
+}
+
+.viewer{
+  width:400px;
+  max-width:90vw;
+  text-align:center;
+}
+
+.card{
+  background:white;
+  border-radius:14px;
+  padding:10px 10px 34px;
+  box-shadow:0 25px 45px rgba(0,0,0,.25);
+  cursor:pointer;
+  animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{ transform:translateY(0); }
+  50%{ transform:translateY(-10px); }
+}
+
+.photoWrap{
+  position:relative;
+  height:500px;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.photoWrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform 1s ease;
+}
+
+.card.show img{
+  transform:scale(1.08);
+}
+
+.cover{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,#ff4f8b,#ff9ec4);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-size:32px;
+  letter-spacing:3px;
+  transition:.7s cubic-bezier(.19,1,.22,1);
+  text-align:center;
+  padding:20px;
+}
+
+.cover small{
+  margin-top:14px;
+  font-size:14px;
+  letter-spacing:.5px;
+  opacity:.9;
+  max-width:260px;
+  line-height:1.4;
+}
+
+.card.show .cover{
+  opacity:0;
+  transform:scale(1.2);
+  pointer-events:none;
+}
+
+.caption{
+  margin-top:10px;
+  font-family:'Pacifico',cursive;
+  color:#b02b5f;
+  font-size:18px;
+}
+
+/* Quote animation */
+.quoteContainer{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  font-family:'Pacifico',cursive;
+  font-size:20px;
+}
+
+.quote{
+  text-align:center;
+  line-height:1.6;
+  max-width:90%;
+}
+
+.quoteLetter{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity 0.5s ease, transform 0.5s ease;
+}
+
+.quoteLetter.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.quoteButton{
+  margin-top:20px;
+  padding:10px 20px;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+  background:#ff4f8b;
+  color:white;
+  cursor:pointer;
+  transition:background 0.3s, opacity 0.5s ease;
+  opacity:0;
+}
+
+.quoteButton.show{
+  opacity:1;
+}
+
+.quoteButton:hover{
+  background:#ff1c70;
+}
+</style>
+</head>
+<body>
+
+<div class="viewer">
+
+  <div class="card" id="card">
+
+    <div class="photoWrap">
+      <img id="photo" src="1717432872494.jpg">
+      <div class="cover" id="cover">
+        ❤️
+        <small>Tap gently… let the song play and take one memory at a time.</small>
+      </div>
+    </div>
+
+    <div class="caption" id="caption">Sweet hello</div>
+
+  </div>
+
+  <div class="quoteContainer" id="quoteContainer">
+    <div class="quote" id="quote"></div>
+    <button class="quoteButton" id="nextPageBtn">Next</button>
+  </div>
+
+</div>
+
+<audio id="song" src="mugam_md9Umf8c.mp3" loop></audio>
+
+<script>
+const photos = [
+  {src:"photo_1_2026-02-03_21-00-43.jpg", text:"The day we met — I didn’t know you’d become my favourite part of every day"},
+  {src:"photo_11_2026-02-03_21-00-43.jpg", text:"Our first Selfie"},
+  {src:"photo_10_2026-02-03_21-00-43.jpg", text:"Our first outing"},
+  {src:"photo_9_2026-02-03_21-00-43.jpg", text:"Between smiles and small moments, love quietly began between us"},
+  {src:"photo_8_2026-02-03_21-00-43.jpg", text:"9/02/2022 — when we became us 💖"},
+  {src:"photo_7_2026-02-03_21-00-43.jpg", text:"Our first Holi together — coloured in laughter and love 🌈💞"},
+  {src:"photo_6_2026-02-03_21-00-43.jpg", text:"Late night talks that turned into forever thoughts 🌙"},
+  {src:"photo_5_2026-02-03_21-00-43.jpg", text:"My favourite place slowly became next to you 🤍"},
+  {src:"photo_3_2026-02-03_21-00-43.jpg", text:"09/02/2023 — one beautiful year of us 💞"},
+  {src:"photo_4_2026-02-03_21-00-43.jpg", text:"09/02/2024 — two beautiful years of us 💞"},
+  {src:"photo_2_2026-02-03_21-00-43.jpg", text:"09/02/2025 — three years of love, laughter and us 💖"}
+];
+
+const card = document.getElementById("card");
+const photo = document.getElementById("photo");
+const caption = document.getElementById("caption");
+const cover = document.getElementById("cover");
+const song = document.getElementById("song");
+const quoteContainer = document.getElementById("quoteContainer");
+const quoteDiv = document.getElementById("quote");
+const nextPageBtn = document.getElementById("nextPageBtn");
+
+let index = 0;
+let revealed = false;
+
+function fadeInMusic(){
+  song.volume = 0;
+  song.play().then(()=>{
+    let v = 0;
+    const t = setInterval(()=>{
+      v += 0.05;
+      if(v >= 1){
+        v = 1;
+        clearInterval(t);
+      }
+      song.volume = v;
+    },200);
+  }).catch(()=>{});
+}
+
+function loadPhoto(i){
+  photo.src = photos[i].src;
+  caption.textContent = photos[i].text;
+
+  if(i === 0){
+    cover.style.display = "flex";
+    card.classList.remove("show");
+    revealed = false;
+  }else{
+    cover.style.display = "none";
+    card.classList.add("show");
+    revealed = true;
+  }
+}
+
+function showQuoteText(text){
+  quoteDiv.innerHTML = "";
+  quoteContainer.style.display = "flex";
+
+  const letters = text.split("");
+
+  letters.forEach(letter=>{
+    const span = document.createElement("span");
+
+    if(letter === " "){
+      span.innerHTML = "&nbsp;";
+      span.style.width = "0.4em";
+    }else{
+      span.textContent = letter;
+    }
+
+    span.classList.add("quoteLetter");
+    quoteDiv.appendChild(span);
+  });
+
+  void quoteDiv.offsetWidth;
+
+  const spans = document.querySelectorAll(".quoteLetter");
+  spans.forEach((span, i)=>{
+    setTimeout(()=>{
+      span.classList.add("show");
+      if(i === spans.length - 1){
+        setTimeout(()=>{ nextPageBtn.classList.add("show"); }, 500);
+      }
+    }, i * 80);
+  });
+}
+
+loadPhoto(index);
+
+// start music when page opens
+window.addEventListener("load", () => {
+  fadeInMusic();
+});
+
+card.addEventListener("click",()=>{
+
+  if(index === 0 && !revealed){
+    card.classList.add("show");
+    revealed = true;
+    return;
+  }
+
+  index++;
+
+  if(index < photos.length){
+    loadPhoto(index);
+  }else{
+    card.style.display = "none";
+    showQuoteText("09/02/2026 — Four years since we began… and you still matter to me.");
+  }
+});
+
+nextPageBtn.addEventListener("click",()=>{
+  window.location.href = "nextpage.html";
+});
+</script>
+
+</body>
+</html>

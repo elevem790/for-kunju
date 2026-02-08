@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Diary for You 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background:#fff0f5;
+  font-family:'Pacifico', cursive;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding-top:40px;
+  overflow:hidden;
+}
+
+.diary-container{
+  width:90%;
+  max-width:800px;
+  background:#fff8f0;
+  border-radius:15px;
+  padding:30px 20px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.2);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+header{
+  font-size:32px;
+  color:#b02b5f;
+  margin-bottom:20px;
+  text-align:center;
+}
+
+.diaryText{
+  width:100%;
+  min-height:400px;
+  background:#fff4f0;
+  border-radius:10px;
+  padding:20px;
+  font-size:20px;
+  color:#b02b5f;
+  line-height:1.6;
+  box-shadow:inset 0 4px 10px rgba(0,0,0,0.1);
+  overflow-y:auto;
+  white-space:pre-wrap;
+}
+
+.readBtn{
+  margin-top:20px;
+  padding:12px 25px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  background:#ff4f8b;
+  color:white;
+  cursor:pointer;
+  transition:background 0.3s;
+}
+
+.readBtn:hover{
+  background:#ff1c70;
+}
+
+.flower{
+  position:absolute;
+  font-size:24px;
+  pointer-events:none;
+  animation:fall 4s linear forwards;
+}
+
+@keyframes fall{
+  0%{transform:translateY(0) rotate(0deg); opacity:1;}
+  100%{transform:translateY(600px) rotate(360deg); opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<div class="diary-container">
+  <header>To My Pennuu 💖</header>
+  <div class="diaryText">
+Hey my love 💞,
+
+I hope you liked this...i just wanted to let you know how much i love you..also its 4 year ...yaaay,Happy Anniversary Ponnahh(even though we are not together..
+
+ee song pole nee illa enkil ennile prakasham ila kunju.I love you more than anyone and anything .always ..ik things are going very bad but i'll always be with you.
+all i'm saying is don't lose the hope .we can be together someday ,some time until that time don't think we can't be together or its not possible . i'm here and i always will be 
+atre olluu,i love you i love you i love uuuuuuhhh💖
+
+I Will Love You As Long As I Breathe💖💖💖💖💖💖💖💖
+  </div>
+  <button class="readBtn" id="readBtn">Song + Flowers 🌸</button>
+</div>
+
+<!-- 👉 second song for this diary page -->
+<audio id="diarySong" src="s2.mp3" loop></audio>
+
+<script>
+const readBtn = document.getElementById('readBtn');
+const diarySong = document.getElementById('diarySong');
+
+const flowerEmojis = ["🌸","🌺","🌼","🌷","💐"];
+
+let songStarted = false;
+
+readBtn.addEventListener('click',()=>{
+
+  // start diary song on first click (browser safe)
+  if(!songStarted){
+    diarySong.volume = 1;
+    diarySong.play().catch(()=>{});
+    songStarted = true;
+  }
+
+  for(let i=0;i<50;i++){
+    const flower = document.createElement('div');
+    flower.classList.add('flower');
+    flower.style.left = Math.random() * window.innerWidth + 'px';
+    flower.style.top = '-50px';
+    flower.style.fontSize = 20 + Math.random()*20 + 'px';
+    flower.textContent = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+    flower.style.animationDuration = 3 + Math.random()*2 + 's';
+    document.body.appendChild(flower);
+
+    setTimeout(()=>flower.remove(),4000);
+  }
+});
+</script>
+
+</body>
+</html>
